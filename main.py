@@ -1,4 +1,3 @@
-from itertools import count
 import tkinter as tk
 import os
 from tkinter import PhotoImage, messagebox, LEFT, RIGHT, TOP
@@ -12,29 +11,52 @@ iconphoto = PhotoImage(file="img/icon.png")
 root.configure(bg="#6985b3")
 root.iconphoto(True, iconphoto)
 
+text1 = tk.StringVar() 
+text2 = tk.StringVar()
+count = tk.StringVar()
+
+
 def addCard():
-    global count
-    count = 0
     nWa = tk.Toplevel()
     nWa.title("pyflash - create flashcards")
     nWa.geometry("960x540")
     nWa.configure(bg="#6985b3")
 
     def register():
-        if len(text1.get()) == 0:
+        counterint = 0
+        class flashcard:
+            def __init__(self, text1, text2):
+                self.text1 = text1
+                self.text2 = text2
+            def __str__(self):
+       
+                return self.text2.get()+' ( '+self.text1.get()+' )'
+
+        flash = []
+        if len(text2.get()) == 0:
             messagebox.showerror("No word entry", "No word entry")
-        elif len(text2.get()) == 0:
+        elif len(text1.get()) == 0:
             messagebox.showerror("No second word entry/definition", "No second word entry/definition")
         else:
-            count + 1
-        tk.label.config(text=count)
+            flash.append(flashcard(text1, text2))
+            counterint+=1
+            count.set(str(counterint))
+        
+        
+        
+        for i in flash:
+                print(">", i)
+
+        def makeCard():
+            pass
+            
 
     tk.Label(nWa, text="word", font=('Helvetica bold', 20)).pack(expand=True)
     tk.Entry(nWa, bd=1, font=('Helvetica bold', 20), textvariable=text2).pack(expand=True)
     tk.Label(nWa, text="word/definition", font=('Helvetica bold', 20)).pack(expand=True)
     tk.Entry(nWa, bd=1, font=('Helvetica bold', 20), textvariable=text1).pack(expand=True)
     tk.Button(nWa, text="add flashcard", font=('Helvetica bold', 20), command=register).pack(expand=True)
-    tk.Label(nWa, text="flashcards added: "+count).pack(expand=True)
+    tk.Label(nWa, textvariable=count).pack(expand=True)
 
 def viewCard():
     nWb = tk.Toplevel()
@@ -49,8 +71,7 @@ def options():
     nWc.configure(bg="#6985b3")
 
 
-text1 = tk.StringVar() 
-text2 = tk.StringVar()
+
 
 # Main window code
 tk.Label(root, text="hey " + str(os.getlogin()) + ", welcome to pyflash!", font=('Helvetica bold', 40)).pack(expand=True)
