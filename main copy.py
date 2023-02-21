@@ -77,3 +77,10 @@ tk.Button(root, text="create flashcards", width=20, height=3, font=('Helvetica b
 tk.Button(root, text="options", width=20, height=3, font=('Helvetica bold', 20), command=options).pack(expand=True, side=RIGHT)
 tk.Button(root, text="view flashcards", width=20, height=3, font=('Helvetica bold', 20), command=viewCard).pack(expand=True, side=TOP)
 root.mainloop()
+
+
+
+
+#nums = list(range(0, c.get()))
+#random.shuffle(nums)
+#print(nums)

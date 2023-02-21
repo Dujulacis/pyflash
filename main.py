@@ -2,6 +2,8 @@ import tkinter as tk
 import os
 from tkinter import PhotoImage, StringVar, messagebox, LEFT, RIGHT, TOP
 import json as serializer
+import random
+from pyparsing import Word
 
 open("flashcard.txt", "w").close()
 
@@ -15,8 +17,11 @@ root.configure(bg="#6985b3")
 root.iconphoto(True, iconphoto)
 
 word = tk.StringVar()
+wordg = tk.StringVar()
 defi = tk.StringVar()
-count = 0 
+defig = tk.StringVar()
+c = tk.IntVar()
+rndo = 0
 
 
 def addCard():
@@ -24,9 +29,6 @@ def addCard():
     nWa.title("pyflash - create flashcards")
     nWa.geometry("960x540")
     nWa.configure(bg="#6985b3")
-
-
-
 
     tk.Label(nWa, text="word", font=('Helvetica bold', 20)).pack(expand=True)
     tk.Entry(nWa, bd=1, font=('Helvetica bold', 20),
@@ -37,16 +39,15 @@ def addCard():
              textvariable=defi).pack(expand=True)
     tk.Button(nWa, text="add flashcard", font=(
         'Helvetica bold', 20), command=register).pack(expand=True)
-    tk.Label(nWa, text=count).pack(expand=True)
+    tk.Label(nWa, textvariable=c).pack(expand=True)
 
 def register():
-    global count
     if len(word.get()) == 0:
         messagebox.showerror("No word", "No word entry")
     elif len(str(defi.get())) == 0:
         messagebox.showerror("No meaning entry", "No meaning entry")
     else:
-        count+=1
+        c.set(c.get()+1)
         with open("flashcard.txt", "a", newline="") as f:
             serializer.dump(
                 {
@@ -55,15 +56,30 @@ def register():
                 }, f
             )
             f.write("\n")
-    print(count)
+
+def randomizer():
+    global rndo
+    rndo = random.randint(0, (c.get()-1))
+    print(rndo)
+
+
+    with open('flashcard.txt') as g:
+        bruh=g.readlines()[rndo]
+
+    result = serializer.loads(bruh)
+    wordg.set(print(result["Word"]))
+    defig.set(print(result["Definition"]))
 
 def viewCard():
     nWb = tk.Toplevel()
     nWb.title("pyflash - view flashcards")
     nWb.geometry("960x540")
     nWb.configure(bg="#6985b3")
-
-
+    randomizer()
+    tk.Label(nWb, textvariable=wordg.get(), font=('Helvetica bold', 20)).pack(expand=True)
+    tk.Label(nWb, textvariable=defig.get(), font=('Helvetica bold', 20)).pack(expand=True)
+    
+    
 def options():
     nWc = tk.Toplevel()
     nWc.title("pyflash - options")
