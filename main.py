@@ -1,6 +1,7 @@
+from faulthandler import disable
 import tkinter as tk
 import os
-from tkinter import PhotoImage, StringVar, messagebox, LEFT, RIGHT, TOP
+from tkinter import BOTTOM, PhotoImage, StringVar, messagebox, LEFT, RIGHT, TOP
 import json as serializer
 import random
 from pyparsing import Word
@@ -20,8 +21,9 @@ word = tk.StringVar()
 wordg = tk.StringVar()
 defi = tk.StringVar()
 defig = tk.StringVar()
-c = tk.IntVar()
+count = tk.IntVar()
 rndo = 0
+c = 0
 
 
 def addCard():
@@ -39,15 +41,21 @@ def addCard():
              textvariable=defi).pack(expand=True)
     tk.Button(nWa, text="add flashcard", font=(
         'Helvetica bold', 20), command=register).pack(expand=True)
-    tk.Label(nWa, textvariable=c).pack(expand=True)
+    tk.Label(nWa, text="flashcards added", font=(
+        'Helvetica bold', 10)).pack(side=TOP)
+    tk.Label(nWa, textvariable=count, font=(
+        'Helvetica bold', 10)).pack(side=BOTTOM)
+
 
 def register():
+    global c
     if len(word.get()) == 0:
         messagebox.showerror("No word", "No word entry")
     elif len(str(defi.get())) == 0:
         messagebox.showerror("No meaning entry", "No meaning entry")
     else:
-        c.set(c.get()+1)
+        count.set(count.get()+1)
+        c = count.get()
         with open("flashcard.txt", "a", newline="") as f:
             serializer.dump(
                 {
@@ -57,29 +65,44 @@ def register():
             )
             f.write("\n")
 
+
 def randomizer():
     global rndo
-    rndo = random.randint(0, (c.get()-1))
+    rndo = random.randint(0, (count.get()-1))
     print(rndo)
 
-
     with open('flashcard.txt') as g:
-        bruh=g.readlines()[rndo]
+        bruh = g.readlines()[rndo]
 
     result = serializer.loads(bruh)
-    wordg.set(print(result["Word"]))
-    defig.set(print(result["Definition"]))
+    wordg.set(result["Word"])
+    defig.set(result["Definition"])
+
 
 def viewCard():
-    nWb = tk.Toplevel()
-    nWb.title("pyflash - view flashcards")
-    nWb.geometry("960x540")
-    nWb.configure(bg="#6985b3")
-    randomizer()
-    tk.Label(nWb, textvariable=wordg.get(), font=('Helvetica bold', 20)).pack(expand=True)
-    tk.Label(nWb, textvariable=defig.get(), font=('Helvetica bold', 20)).pack(expand=True)
-    
-    
+    if c < 1:
+        messagebox.showerror("No flashcard entry", "No flashcard entry")
+    else:
+        nWb = tk.Toplevel()
+        nWb.title("pyflash - view flashcards")
+        nWb.geometry("960x540")
+        nWb.configure(bg="#6985b3")
+
+        def hint():
+            button1.config(state="disabled")
+            tk.Label(nWb, textvariable=defig, font=(
+            'Helvetica bold', 20)).pack(expand=True)
+            
+
+        tk.Label(nWb, textvariable=wordg, font=(
+            'Helvetica bold', 20)).pack(expand=True)
+        button1 = tk.Button(nWb, text="hint", font=(
+            'Helvetica bold', 20), command=hint).pack(expand=True, side=BOTTOM)
+
+        
+        randomizer()
+
+
 def options():
     nWc = tk.Toplevel()
     nWc.title("pyflash - options")
