@@ -5,6 +5,7 @@ from tkinter import BOTTOM, PhotoImage, StringVar, messagebox, LEFT, RIGHT, TOP
 import json as serializer
 import random
 
+
 open("flashcard.txt", "w").close()
 
 # Window setup
@@ -32,19 +33,19 @@ def addCard():
     nWa.geometry("960x540")
     nWa.configure(bg="#6985b3")
 
-    tk.Label(nWa, text="word", font=('Helvetica bold', 20)).pack(expand=True)
+    tk.Label(nWa, text="word", font=('Helvetica bold', 20), bg="white").pack(expand=True)
     tk.Entry(nWa, bd=1, font=('Helvetica bold', 20),
-             textvariable=word).pack(expand=True)
+             textvariable=word, bg="white").pack(expand=True)
     tk.Label(nWa, text="meaning", font=(
-        'Helvetica bold', 20)).pack(expand=True)
+        'Helvetica bold', 20), bg="white").pack(expand=True)
     tk.Entry(nWa, bd=1, font=('Helvetica bold', 20),
-             textvariable=defi).pack(expand=True)
+             textvariable=defi, bg="white").pack(expand=True)
     tk.Button(nWa, text="add flashcard", font=(
-        'Helvetica bold', 20), command=register).pack(expand=True)
+        'Helvetica bold', 20), command=register, bg="white").pack(expand=True)
     tk.Label(nWa, text="flashcards added", font=(
-        'Helvetica bold', 10)).pack(side=TOP)
+        'Helvetica bold', 10), bg="white").pack(side=TOP)
     tk.Label(nWa, textvariable=count, font=(
-        'Helvetica bold', 10)).pack(side=BOTTOM)
+        'Helvetica bold', 10), bg="white").pack(side=BOTTOM)
 
 
 def register():
@@ -111,19 +112,19 @@ def viewCard():
 
 
         tk.Label(nWb, textvariable=wordg, font=(
-            'Helvetica bold', 20)).pack(expand=True)
+            'Helvetica bold', 20), bg="white").pack(expand=True)
         hinttext = tk.Label(nWb, textvariable=0, font=(
-            'Helvetica bold', 20))
+            'Helvetica bold', 20), bg="white")
         hinttext.pack(expand=True)
         hintbutton = tk.Button(nWb, text="hint", font=(
-            'Helvetica bold', 20), command=hint, state=tk.NORMAL)
-        hintbutton.pack(expand=True)
+            'Helvetica bold', 20), command=hint, state=tk.NORMAL, bg="white")
+        hintbutton.pack(expand=True, side=LEFT)
         nextbutton = tk.Button(nWb, text="next", font=(
-            'Helvetica bold', 20), command=randomizer, state=tk.NORMAL)
+            'Helvetica bold', 20), command=randomizer, state=tk.NORMAL, bg="white")
         nextbutton.pack(expand=True, side=RIGHT)
         removebutton = tk.Button(nWb, text="know", font=(
-            'Helvetica bold', 20), command=remover, state=tk.NORMAL)
-        removebutton.pack(expand=True, side=LEFT)
+            'Helvetica bold', 20), command=remover, state=tk.NORMAL, bg="white")
+        removebutton.pack(expand=True)
         
         randomizer()
 
@@ -133,15 +134,16 @@ def options():
     nWc.title("pyflash - options")
     nWc.geometry("960x540")
     nWc.configure(bg="#6985b3")
+    tk.Button
 
 
 # Main window code
 tk.Label(root, text="hey " + str(os.getlogin()) +
-         ", welcome to pyflash!", font=('Helvetica bold', 40)).pack(expand=True)
+         ", welcome to pyflash!", font=('Helvetica bold', 40), bg="white").pack(expand=True)
 tk.Button(root, text="create flashcards", width=20, height=3, font=(
-    'Helvetica bold', 20), command=addCard).pack(expand=True, side=LEFT)
+    'Helvetica bold', 20), command=addCard, bg="white").pack(expand=True, side=LEFT)
 tk.Button(root, text="options", width=20, height=3, font=(
-    'Helvetica bold', 20), command=options).pack(expand=True, side=RIGHT)
+    'Helvetica bold', 20), command=options, bg="white").pack(expand=True, side=RIGHT)
 tk.Button(root, text="view flashcards", width=20, height=3, font=(
-    'Helvetica bold', 20), command=viewCard).pack(expand=True, side=TOP)
+    'Helvetica bold', 20), command=viewCard, bg="white").pack(expand=True, side=TOP)
 root.mainloop()
