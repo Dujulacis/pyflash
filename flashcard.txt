@@ -1,1 +1,3 @@
-{"Word": "123dawd", "Definition": "dawd123"}
+{"Word": "a", "Definition": "a"}
+{"Word": "b", "Definition": "b"}
+{"Word": "c", "Definition": "c"}

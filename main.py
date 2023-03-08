@@ -1,12 +1,14 @@
-from faulthandler import disable
+#from faulthandler import disable
 import tkinter as tk
-import os
+#import os
+import getpass #iegust lietotajvardu
 from tkinter import BOTTOM, PhotoImage, StringVar, messagebox, LEFT, RIGHT, TOP
-import json as serializer
+import json
 import random
+import requests
 
 
-open("flashcard.txt", "w").close()
+open("flashcard.txt", "w").close() #iztira teksta dokumentu atverot programmu (nakotnes versijas to varetu izveleties lietotajs)
 
 # Window setup
 root = tk.Tk()
@@ -17,6 +19,7 @@ iconphoto = PhotoImage(file="img/icon.png")
 root.configure(bg="#6985b3")
 root.iconphoto(True, iconphoto)
 
+# Variable setup
 word = tk.StringVar()
 wordg = tk.StringVar()
 defi = tk.StringVar()
@@ -26,8 +29,8 @@ rndo = 0
 c = 0
 removecount = 0
 
-
-def addCard():
+# Functions
+def addCard(): #flashcard pievienosanas logs
     nWa = tk.Toplevel()
     nWa.title("pyflash - create flashcards")
     nWa.geometry("960x540")
@@ -46,9 +49,12 @@ def addCard():
         'Helvetica bold', 10), bg="white").pack(side=TOP)
     tk.Label(nWa, textvariable=count, font=(
         'Helvetica bold', 10), bg="white").pack(side=BOTTOM)
+    tk.Button(nWa, text="clear flashcards", font=(
+        'Helvetica bold', 20), command=clearcard, bg="white").pack(expand=True)
 
 
-def register():
+def register(): #funkcija, kas parbauda vai ir ievaditas nepieciesamas vertibas kartinam,
+     #pieskaita pievienoto kartinu skaitu un pievieno tas teksta dokumenta json formata
     global c
     if len(word.get()) == 0:
         messagebox.showerror("No word", "No word entry")
@@ -58,7 +64,7 @@ def register():
         count.set(count.get()+1)
         c = count.get()
         with open("flashcard.txt", "a", newline="") as f:
-            serializer.dump(
+            json.dump(
                 {
                     "Word": word.get(),
                     "Definition": defi.get()
@@ -66,18 +72,25 @@ def register():
             )
             f.write("\n")
 
+def clearcard(): #nodrosina kartinu notirisanu
+    global rndo, c, removecount, count
+    open("flashcard.txt", "w").close()
+    rndo = 0
+    c = 0
+    removecount = 0
+    count.set(0)
 
-def viewCard():
+def viewCard(): #kartinu apskates/macisanas logs
     if c < 1:
-        messagebox.showerror("No flashcard entry", "No flashcard entry")
+        messagebox.showerror("No flashcard entry", "No flashcard entry") #parbauda vai ir izveidota vismaz viena kartina
     else:
         nWb = tk.Toplevel()
         nWb.title("pyflash - view flashcards")
         nWb.geometry("960x540")
         nWb.configure(bg="#6985b3")
-        removedlist=[]
+        removedlist=[] #saraksts ar lietotaja zinatajiem vardiem
 
-        def randomizer():
+        def randomizer(): #funkcija, kas izvelas nejausi izveletu vardu un skaidrojumu
             hintbutton.config(state=tk.NORMAL)
             hinttext.config(textvariable=0)
             global rndo
@@ -86,22 +99,31 @@ def viewCard():
             print(rndo)
             if rndo in removedlist:
                 if removecount == (count.get()):
-                    messagebox.showinfo("You won!", "You won!")
+                    winmsg = messagebox.askquestion("You won!", "Try again or exit?", icon="question") #kad lietotajs "uzvar", izvele spelet atkal vai ne
+                    if winmsg == "yes":
+                        removecount=0
+                        removedlist.clear()
+                    else:
+                        nWb.destroy()
+                        removecount=0
+                        removedlist.clear()
                 else:
                     randomizer()
             
             with open('flashcard.txt') as g:
-                bruh = g.readlines()[rndo]
+                readline = g.readlines()[rndo] #nolasa random liniju teksta dokumenta
 
-            result = serializer.loads(bruh)
+            result = json.loads(readline)
             wordg.set(result["Word"])
             defig.set(result["Definition"])
 
-        def hint():
+
+        def hint(): #funkcija, kas parada atbildi
             hintbutton.config(state=tk.DISABLED)
             hinttext.config(textvariable=defig)
 
-        def remover():
+
+        def remover(): #funkcija, kas iznem vardu (liniju) no random
             global removecount
             hintbutton.config(state=tk.NORMAL)
             hinttext.config(textvariable=0)
@@ -109,8 +131,6 @@ def viewCard():
             removecount+=1
             randomizer()
             
-
-
         tk.Label(nWb, textvariable=wordg, font=(
             'Helvetica bold', 20), bg="white").pack(expand=True)
         hinttext = tk.Label(nWb, textvariable=0, font=(
@@ -129,17 +149,23 @@ def viewCard():
         randomizer()
 
 
-def options():
+def options(): #opciju logs, kura lietotajs varetu mainit dazadas opcijas (nakotne)
     nWc = tk.Toplevel()
     nWc.title("pyflash - options")
     nWc.geometry("960x540")
     nWc.configure(bg="#6985b3")
-    tk.Button
 
+
+def get_random_quote(): #funkcija, kas izmantojot api iegust random quote
+    random_quote = requests.get("http://api.quotable.io/random").json()
+    quote = random_quote["content"] + "\n\n" + "~" + random_quote["author"]
+    return quote
+     
 
 # Main window code
-tk.Label(root, text="hey " + str(os.getlogin()) +
-         ", welcome to pyflash!", font=('Helvetica bold', 40), bg="white").pack(expand=True)
+tk.Label(root, text="hey " + str(getpass.getuser()) +
+         ", welcome to pyflash!", font=('Helvetica bold', 40), bg="white", wraplength=1100, justify="center").pack(expand=True)
+tk.Label(root, text=get_random_quote(), font=('Helvetica bold', 15, ), wraplength=1000, justify="center", bg="white").pack()
 tk.Button(root, text="create flashcards", width=20, height=3, font=(
     'Helvetica bold', 20), command=addCard, bg="white").pack(expand=True, side=LEFT)
 tk.Button(root, text="options", width=20, height=3, font=(
