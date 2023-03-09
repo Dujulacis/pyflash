@@ -2,7 +2,7 @@
 import tkinter as tk
 #import os
 import getpass #iegust lietotajvardu
-from tkinter import BOTTOM, PhotoImage, StringVar, messagebox, LEFT, RIGHT, TOP
+from tkinter import BOTTOM, PhotoImage, messagebox, LEFT, RIGHT, TOP
 import json
 import random
 import requests
@@ -13,7 +13,6 @@ open("flashcard.txt", "w").close() #iztira teksta dokumentu atverot programmu (n
 # Window setup
 root = tk.Tk()
 root.title("pyflash - learning made easy")
-root.eval("tk::PlaceWindow . center")
 root.geometry("1280x720")
 iconphoto = PhotoImage(file="img/icon.png")
 root.configure(bg="#6985b3")
@@ -48,9 +47,10 @@ def addCard(): #flashcard pievienosanas logs
     tk.Label(nWa, text="flashcards added", font=(
         'Helvetica bold', 10), bg="white").pack(side=TOP)
     tk.Label(nWa, textvariable=count, font=(
-        'Helvetica bold', 10), bg="white").pack(side=BOTTOM)
+        'Helvetica bold', 10), bg="white").pack()
     tk.Button(nWa, text="clear flashcards", font=(
-        'Helvetica bold', 20), command=clearcard, bg="white").pack(expand=True)
+        'Helvetica bold', 10), command=clearcard, bg="white").pack(expand=True, side=BOTTOM)    
+
 
 
 def register(): #funkcija, kas parbauda vai ir ievaditas nepieciesamas vertibas kartinam,

@@ -1,3 +1,0 @@
-{"Word": "a", "Definition": "a"}
-{"Word": "b", "Definition": "b"}
-{"Word": "c", "Definition": "c"}
